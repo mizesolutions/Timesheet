@@ -113,7 +113,7 @@ a {
    align-items: center;
    justify-content: center;
    /*width: 65%;*/
-   min-width: 10em;
+   min-width: 20em;
    /*border: 1px solid #bab5b5;*/
    border: 1px solid #000000;
    border-bottom-right-radius: 8px;
