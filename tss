@@ -40,7 +40,7 @@ fi
 
 cd /var/www/ts
 export SYMFONY_ENV=prod
-sudo setfacl -R -m u:www-data:rwx /var/www/ Timesheet/
+sudo setfacl -R -m u:www-data:rwx /var/www/html/Timesheet/
 sudo setfacl -R -m u:root:rwx /var/www/ Timesheet/
 sudo setfacl -R -m u:timesheet:rwx /var/www/ Timesheet/
 cd Timesheet

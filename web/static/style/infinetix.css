@@ -112,12 +112,13 @@ a {
    align-content: center;
    align-items: center;
    justify-content: center;
-   width: 65%;
-   border: 1px solid #bab5b5;
+   /*width: 65%;*/
+   /*border: 1px solid #bab5b5;*/
+   border: 1px solid #000000;
    border-bottom-right-radius: 8px;
    border-bottom-left-radius: 8px;
-   background-color: #cfcfcf;
-   box-shadow: 3px 3px 10px 2px #9d9ea2;
+   background-color: #d0dde9;
+   box-shadow: 0 0 8px 2px #3c3b3b;
 }
 
 .textBox1 {
@@ -129,18 +130,18 @@ a {
 }
 
 h1 {
-   color: #213540;
+   color: #000000;
    text-align: center;
-   text-shadow: 2px 2px rgb(255, 255, 255);
+   text-shadow: 1px 1px rgba(153, 192, 255, 0.93);
    font-weight: bold;
-   font-size: 95px;
+   font-size: 5em;
    font-family: 'Titillium Web', sans-serif;
 }
 
 .textBox2 {
    margin: .8em 0 5em 0;
    padding: 0;
-   width: 75%;
+   /*width: 75%;*/
 }
 
 .log-in {

@@ -7,10 +7,10 @@
         this.end = this.options.end || this.end;
         this.step = this.options.step || this.step;
         this.order = this.options.order || this.order;
-        this.selected = this.options.selected || this.$el.data('selected') || this.selected
+        this.selected = this.options.selected || this.$el.data('selected') || this.selected;
         this.years = [];
         this.init();
-    }
+    };
 
     YearSelect.prototype = {
         constructor: YearSelect,
@@ -54,7 +54,7 @@
             this.years = [];
             this.$el.html('');
         }
-    }
+    };
 
     $.fn.yearselect = function(option) {
         return this.each(function() {
@@ -69,7 +69,7 @@
                     'class' : yearselectel.attr('class') || yearselectel.data('class') || '',
                     'id' : yearselectel.attr('id') || yearselectel.data('id') || '',
                     'selected' : yearselectel.attr('value') || yearselectel.data('selected') || '',
-                }
+                };
                 console.log(el_data);
                 yearselectel = $('<select class="yearselect"></select>')
                     .attr('name', el_data.name)
@@ -82,7 +82,7 @@
 
             new YearSelect(yearselectel, option);
         });
-    }
+    };
 
     $.fn.yearselect.defaults = {
         start: 1970,
