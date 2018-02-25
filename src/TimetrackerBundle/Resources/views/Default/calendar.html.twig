@@ -1,0 +1,646 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Infinetix: Time Sheet
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="{{ absolute_url(asset('static/style/calendar.css')) }}"/>
+    <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('static/assets/img/favicon.ico')) }}"/>
+
+{% endblock stylesheets %}
+
+{% block body %}
+
+    <div class="page">
+        <div class="sheet-title-row">
+            <div class="sheet-title">Time Sheet
+            </div>
+        </div>
+        <div class="sheet">
+            <div class="calendar-head">
+                <div class="calendar-date">
+                    <span class="calendar-text" id="current-date"
+                          data-bind="html: monthNames[month-1]+' '+year, value: monthNames[month-1]+'_'+year"></span>
+                    &ensp;<input style="display: none;" type="month" id="InlineMonth" data-bind="value: month + '/' + year"/>
+                </div>
+                <div class="last-update">
+                    Last Update:
+                    <span data-bind="html: lastUpdated"></span>
+                    <div>
+                        <div class="row">
+                     <span class="fake-link add-button" title="Add Project" id="newProject">
+                        <input class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round" type="button"
+                               value="Add Project">
+                     </span>
+                            <div class="row-position">
+                                <!-- ko foreach: dayHeader -->
+                                <div class="td">
+                                    <div class="day-holder">
+                                        <div class="high-light day-numbers"
+                                             data-bind="text: $data, css: 'column_'+$index()+1  + ' task_' + $parent.id"></div>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
+                    <div data-bind="foreach: companies" class="companies">
+                        <div class="company">
+                            <!-- ko foreach: projects -->
+                            <div class="row">
+                                <div class="full-column">
+                                    <div class="project-item">
+                                        <span class="company-name" data-bind="text: $parent.name+':'"></span>
+                                        <span class="project-name" data-bind="text:name"></span>
+                                    </div>
+                                    <span class="delete-task"
+                                          data-bind="attr:{'id': 'projectId_'+id+'_'+trackedId}, css: {editable:!pEditable}"
+                                          onclick="deleteProject(this);">
+                              <input class="w3-btn w3-ripple w3-red w3-small w3-padding-small w3-round button-style"
+                                     data-bind="css: {editable:!pEditable}" value="Delete Project">
+                           </span>
+                                    <span class="fake-link" title="Add Task"
+                                          data-bind="attr:{'id': 'projectId_'+id+'_'+trackedId}, css: {editable:!pEditable}"
+                                          onclick="addTask(this);">
+                              <input class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round button-style"
+                                     data-bind="css: {editable:!pEditable}" value="Add Task">
+                           </span>
+                                </div>
+                            </div>
+                            <!-- ko foreach: tasks -->
+                            <div class="row">
+                                <div class="lg-column task-name">
+                                    <span class="task-title"
+                                          data-bind="text: name, attr:{'id': 'taskId_'+id+'_'+pid}"></span>
+                                    <span class="delete-task" data-bind="attr:{'id': 'taskId_'+id+'_'+pid}"
+                                          onclick="deleteTask(this);">
+                              <img class="action-icon delete-button" data-bind="css: {editable:!tEditable}" type="image"
+                                   src="{{ absolute_url(asset('static/assets/img/delete_25x25.png')) }}"
+                                   title="Delete Task" width="10px" height="10px"/>
+                           </span>
+                                </div>
+                                <div class="day-row">
+                                    <!-- ko foreach: days -->
+                                    <div class="td td-column">
+                                        <div class="day-numbers"
+                                             data-bind="css: 'column_'+$index()+1 + ' task_' + $parent.id">
+                                            <div data-bind="ifnot: $parent.isHoliday">
+                                                <input type="text" size="2" class="high-light day-input "
+                                                       data-bind="value: hours, style:{'font-weight': hours > 0 ? 'bold' : 'normal' }, attr:{'id': id }, css: 'column_'+$index()+1, css: {weekend:isWeekend, weekday:!isWeekend}, enable: !$parent.isHoliday"
+                                                       onchange="hoursChanged(this)"/>
+                                            </div>
+                                            <div data-bind="if: $parent.isHoliday">
+                                                <input type="text" size="2" class="high-light holiday"
+                                                       data-bind="value: hours, style:{'font-weight': hours > 0 ? 'bold' : 'normal' }, attr:{'id': id }, css: 'column_'+$index()+1, css: {weekend:isWeekend, weekday:!isWeekend}, enable: !$parent.isHoliday"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /ko -->
+                                </div>
+                                <div class="total-task-holder">
+                                    <div class="high-light tt-holder"
+                                         data-bind="text: taskSubtotal, style:{'font-weight': taskSubtotal > 0 ? 'bold' : 'normal' }, css: 'column_0' + ' task_' + id"></div>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Project Modal -->
+            <div class="reveal-modal large project-top" style="display:none" id="projectModal" data-reveal tabindex="-1"
+                 role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog add-task">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add Project</h4>
+                        </div>
+                        <div class="add-error" id="projectError"></div>
+
+                        <div id="projectModalBody" class="modal-body">
+                            <select id="companySelect" data-bind="options: availableCompanies, optionsText: 'name'"
+                                    onchange="updateAvailableProjects(this)"></select>
+                            <select id="projectSelect"
+                                    data-bind="visible: availableProjects.length >0, options: availableProjects, optionsText: 'name'"></select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round"
+                                    id="projectFormSaveButton" onclick="addProject()">Add Project
+                            </button>
+                        </div>
+                        <button type="button" class="w3-btn w3-ripple w3-red w3-small w3-padding-small w3-round"
+                                id="projectModalClose">Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Task Modal -->
+            <div class="reveal-modal large on-top" style="display:none" id="taskModal" data-reveal tabindex="-1"
+                 role="dialog" aria-hidden="true">
+                <div class="modal-dialog add-task">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="modalTitle">Add Task</h4>
+                        </div>
+                        <div class="add-error" id="taskError"></div>
+
+                        <div class="modal-body">
+                            <select id="taskSelect" data-bind="options: availableTasks, optionsText: 'name'"></select>
+
+                        </div>
+                        <div class="modal-footer btn-row">
+                            <button type="button" class="w3-btn w3-ripple w3-blue w3-small w3-padding-small w3-round"
+                                    id="formCreateTaskButton">Create New
+                            </button>
+                            <button type="button" class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round"
+                                    id="formAddTaskButton">Add Task
+                            </button>
+                        </div>
+                        <button type="button" class="w3-btn w3-ripple w3-red w3-small w3-padding-small w3-round"
+                                id="taskModelClose">Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dialogCreateMonth" title="Setup New Month">
+                <p>
+                    <span class="ui-icon ui-icon-alert" style="float:left; margin: 0 7px 20px 0;"></span>
+                    <span id="dialogMessage">Default Message</span>
+                </p>
+            </div>
+
+            <div class="footer">
+                <div class="row-footer">
+                    <div class="lg-column footer-title">
+                        <strong>Totals:</strong>
+                    </div>
+                    <!-- ko foreach: subtotals -->
+                    <div class="total-sm-column block" data-bind="css: {weekend:isWeekend, weekday:!isWeekend}">
+                        <div class="total-day-holder">
+                            <div class="high-light totals"
+                                 data-bind="text: value, style:{'font-weight': value > 0 ? 'bold' : 'normal' }, css: 'column_'+$index()+1 + ' task_' + $parent.id"></div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                </div>
+            </div>
+            <!-- sheet -->
+        </div>
+        <!-- page -->
+    </div>
+{% endblock body %}
+{% block javascripts %}
+
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script type="text/javascript" src="{{ absolute_url(asset('static/knockout/knockout.js')) }}"></script>
+    <script type="text/javascript" src="{{ absolute_url(asset('static/MonthPicker/MonthPicker.js')) }}"></script>
+
+    <script type="text/javascript">
+
+        var monthNames = [
+            "January",
+            "Feburary",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        ];
+
+        var dataModel;
+        var companies = ko.observableArray();
+        var resData;
+        var d = new Date();
+        var month = d.getMonth() + 1;
+        var year = d.getFullYear();
+
+        $(function () {
+
+            $("#dialogCreateMonth").dialog({resizable: false, autoOpen: false, height: 200, modal: true});
+
+
+            $("#InlineMonth").MonthPicker({
+                Position: {
+                    my: "right-46% bottom-61%",
+                    at: "right bottom",
+                    of: "#InlineMonth"
+                },
+                OnAfterChooseMonth: function (selectedDate) {
+                    month = selectedDate.getMonth() + 1;
+                    year = selectedDate.getFullYear();
+                    loadMonth(month, year, false, false, d.getMonth() + 1, d.getFullYear());
+                }
+            });
+
+            loadMonth(d.getMonth() + 1, d.getFullYear(), true, false, d.getMonth() + 1, d.getFullYear());
+
+        }); // end function
+
+
+        $('#newProject').click(function () {
+            $('#projectModal').show();
+        });
+
+
+        $('#projectModalClose').click(function () {
+            $('#projectModal').hide();
+            $("#projectError").hide();
+        });
+
+
+        $('#taskModelClose').click(function () {
+            $('#taskModal').hide();
+            $("#taskError").hide();
+        });
+
+
+        function loadMonth(month, year, create, createEmpty, currentMonth, currentYear) {
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: Routing.generate('calendarRoute', {
+                    month: month,
+                    year: year,
+                    create: create
+                        ? 1
+                        : 0,
+                    createEmpty: createEmpty
+                        ? 1
+                        : 0,
+                    currentMonth: currentMonth,
+                    currentYear: currentYear
+                }),
+                dataType: 'JSON',
+                success: function (data) {
+//               console.log(JSON.stringify(data));
+
+                    // reverse sorts the companies array so that the Infinetix defaults are always last.
+                    if (data.companies != null) {
+                        companies = data.companies;
+                        companies.reverse();
+                    }
+
+                    if (data.status == false) {
+                        if (create) {
+                            alert("Failed to create this month: " + data.message);
+                            return;
+                        } else {
+
+                            $("#dialogMessage").html(data.message);
+
+                            if (data.canCreate == false) {
+                                $("#dialogCreateMonth").dialog({
+                                    buttons: {
+                                        "Okay": function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+
+                            } else {
+
+                                $("#dialogCreateMonth").dialog({
+                                    buttons: {
+                                        "Create from current month": function () {
+                                            loadMonth(month, year, true, false, dataModel().month, dataModel().year);
+                                            $(this).dialog("close");
+                                        },
+                                        "Create empty": function () {
+                                            loadMonth(month, year, true, true);
+                                            $(this).dialog("close");
+                                        },
+                                        "Cancel": function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            }
+                            $("#dialogCreateMonth").dialog("open");
+                            return;
+                        }
+                    }
+
+                    data.availableCompanies = [];
+                    data.availableProjects = [];
+                    data.availableTasks = [];
+                    data.lastUpdated = "Never";
+
+                    if (dataModel == null) {
+
+                        dataModel = ko.observable(data);
+
+                        ko.applyBindings(dataModel);
+
+                        calculateSubTotals();
+
+                    } else {
+                        dataModel(data);
+                        calculateSubTotals();
+
+                    }
+
+                    $(".high-light").focus(function () {
+                        var classes = $(this).parent().parent().attr("class").split(' ');
+                        for (var i = 0; i < classes.length; i++) {
+                            if (classes[i].startsWith("column")) {
+                                $("." + classes[i]).css("background-color", "#fbf78a");
+                                $("." + classes[i]).css("color", "red");
+                                $("." + classes[i]).children().css("background-color", "#fbf78a");
+                                $("." + classes[i]).children().css("color", "red");
+                                $("." + classes[i]).children().children().css("background-color", "#fbf78a");
+                                $("." + classes[i]).children().children().css("color", "red");
+                                $("." + classes[i]).children().children().children().css("background-color", "#fbf78a");
+                                $("." + classes[i]).children().children().children().css("color", "red");
+                            } else if (classes[i].startsWith("task")) {
+                                $("." + classes[i]).css("background-color", "#fbf78a");
+                                $("." + classes[i]).css("color", "red");
+                                $("." + classes[i]).children().css("background-color", "#fbf78a");
+                                $("." + classes[i]).children().css("color", "red");
+                                $("." + classes[i]).children().children().css("background-color", "#fbf78a");
+                                $("." + classes[i]).children().children().css("color", "red");
+                                $("." + classes[i]).children().children().children().css("background-color", "#fbf78a");
+                                $("." + classes[i]).children().children().children().css("color", "red");
+                            }
+                        }
+                        calculateSubTotals();
+                    });
+
+                    $(".high-light").focusout(function () {
+                        var classes = $(this).parent().parent().attr("class").split(' ');
+                        for (var i = 0; i < classes.length; i++) {
+                            if (classes[i].startsWith("column")) {
+                                $("." + classes[i]).css("background-color", "");
+                                $("." + classes[i]).css("color", "");
+                                $("." + classes[i]).children().css("background-color", "");
+                                $("." + classes[i]).children().css("color", "");
+                                $("." + classes[i]).children().children().css("background-color", "");
+                                $("." + classes[i]).children().children().css("color", "");
+                                $("." + classes[i]).children().children().children().css("background-color", "");
+                                $("." + classes[i]).children().children().children().css("color", "");
+                            } else if (classes[i].startsWith("task")) {
+                                $("." + classes[i]).css("background-color", "");
+                                $("." + classes[i]).css("color", "");
+                                $("." + classes[i]).children().css("background-color", "");
+                                $("." + classes[i]).children().css("color", "");
+                                $("." + classes[i]).children().children().css("background-color", "");
+                                $("." + classes[i]).children().children().css("color", "");
+                                $("." + classes[i]).children().children().children().css("background-color", "");
+                                $("." + classes[i]).children().children().children().css("color", "");
+                            }
+                        }
+                        calculateSubTotals();
+                    });
+                }
+            });
+            loadCompanies();
+        }
+
+
+        function calculateSubTotals() {
+
+            for (var i = 0; i < dataModel().daysInMonth; i++) {
+                dataModel().subtotals[i].value = 0;
+            }
+
+            for (var companyIndex = 0; companyIndex < dataModel().companies.length; companyIndex++) {
+                for (var projectIndex = 0; projectIndex < dataModel().companies[companyIndex].projects.length; projectIndex++) {
+                    for (var taskIndex = 0; taskIndex < dataModel().companies[companyIndex].projects[projectIndex].tasks.length; taskIndex++) {
+                        dataModel().companies[companyIndex].projects[projectIndex].tasks[taskIndex].taskSubtotal = 0;
+                        for (var dayIndex = 0; dayIndex < dataModel().companies[companyIndex].projects[projectIndex].tasks[taskIndex].days.length; dayIndex++) {
+                            dataModel().subtotals[dayIndex].value += 1 * dataModel().companies[companyIndex].projects[projectIndex].tasks[taskIndex].days[dayIndex].hours;
+                            dataModel().companies[companyIndex].projects[projectIndex].tasks[taskIndex].taskSubtotal += 1 * dataModel().companies[companyIndex].projects[projectIndex].tasks[taskIndex].days[dayIndex].hours;
+                        }
+                    }
+                }
+            }
+        }
+
+        function displayMonthSelection() {
+            $("#InlineMonth").show();
+        }
+
+        function hoursChanged(obj) {
+            console.log("changed: " + obj.id + " to " + obj.value);
+
+            //trackedDayId" = "\d+"}, options = { "expose" = true }, name="dayUpdateHours
+
+            $.ajax({
+                type: "POST",
+                url: Routing.generate('dayUpdateHours', {trackedDayId: obj.id}),
+                data: "hours=" + obj.value,
+                dataType: 'JSON',
+                success: function (data, textStatus, xhr) {
+
+                    var currentdate = new Date();
+                    var datetime = "Last Sync: " + currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " @ " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+                    dataModel().lastUpdated = datetime;
+                    dataModel(dataModel());
+                    calculateSubTotals();
+                }
+            });
+            calculateSubTotals();
+
+        }
+
+        function updateAvailableProjects(obj) {
+            console.log("Index: " + obj.selectedIndex);
+            if (obj.selectedIndex >= dataModel().availableCompanies.length)
+                return;
+            if (obj.selectedIndex < 0)
+                return;
+            dataModel().availableProjects = dataModel().availableCompanies[obj.selectedIndex].projects;
+            dataModel(dataModel());
+        }
+
+        function loadCompanies() {
+            $.getJSON("{{ path('companies.json') }}", function (data) {
+                dataModel().availableCompanies = data.companies;
+                dataModel(dataModel());
+            });
+        }
+
+        function addProject() {
+            projectId = dataModel().availableProjects[$("#projectSelect").prop("selectedIndex")].id;
+
+            console.log("ProjectID: " + projectId);
+
+            $.ajax({
+                type: "POST",
+                url: Routing.generate('calendarTrackProject', {
+                    month: dataModel().month,
+                    year: dataModel().year,
+                    projectId: projectId
+                }),
+                dataType: 'JSON',
+                success: function (data, textStatus, xhr) {
+
+                    if (data.status == false) {
+                        $("#projectError").show().html(data.message);
+                    } else {
+                        $('#projectModal').hide();
+                        $("#projectError").hide();
+                        loadMonth(dataModel().month, dataModel().year, true, false, dataModel().month, dataModel().year);
+                    }
+                }
+            });
+        }
+
+        function deleteProject(obj) {
+            console.log("deleting object of id: " + obj.id);
+            trackedProjectId = obj.id.split("_")[2];
+            console.log("trackedProjectId: " + trackedProjectId);
+
+            if (confirm("This will delete ALL tasks and time entires that are associated with this project. Are you sure you want to delete this project?")) {
+
+                $.ajax({
+                    type: "DELETE",
+                    url: Routing.generate('calendarTrackProject', {
+                        month: dataModel().month,
+                        year: dataModel().year,
+                        projectId: trackedProjectId
+                    }),
+                    dataType: 'JSON',
+                    success: function (data, textStatus, xhr) {
+                        if (data.status == false) {
+                            alert(data.message);
+                        } else {
+                            loadMonth(dataModel().month, dataModel().year, true, false, dataModel().month, dataModel().year);
+                        }
+                    }
+                });
+            }
+        }
+
+        var projectId;
+        var trackedProjectId;
+
+        $("#formCreateTaskButton").click(function () {
+            console.log("trackedProjectId: " + trackedProjectId);
+            newTaskName = prompt("New Task Name");
+
+
+            $.ajax({
+                type: "POST",
+                url: Routing.generate('projectAddTask', {projectId: projectId}),
+                data: {
+                    'name': newTaskName,
+                    'editable': 1,
+                    'trackedProjectId': trackedProjectId
+                },
+                dataType: 'JSON',
+                success: function (data, textStatus, xhr) {
+                    if (data.status == false) {
+                        alert(data.message);
+                    } else {
+                        $('#taskModal').hide();
+                        console.log("Added" + data);
+                        console.log("TaskId" + data.taskId);
+                        taskId = data.taskId;
+                        trackedProjectId = data.trackedProjectId;
+
+                        $.ajax({
+                            type: "POST",
+                            url: Routing.generate('projectTrackTask', {trackedProjectId: trackedProjectId}),
+                            data: {
+                                'taskId': taskId
+                            },
+                            dataType: 'JSON',
+                            success: function (data, textStatus, xhr) {
+                                if (data.status == false) {
+                                    $("#taskError").show().html(data.message);
+                                } else {
+                                    $('#taskModal').hide();
+                                    $("#taskError").hide();
+                                    console.log("Added");
+                                    loadMonth(dataModel().month, dataModel().year, true, false, dataModel().month, dataModel().year);
+                                }
+                            }
+                        });
+                        loadMonth(dataModel().month, dataModel().year, true, false, dataModel().month, dataModel().year);
+                    }
+                }
+            });
+
+        });
+
+        $("#formAddTaskButton").click(function () {
+            taskId = dataModel().availableTasks[$("#taskSelect").prop("selectedIndex")].id;
+            console.log("Task ID: " + taskId);
+
+            $.ajax({
+                type: "POST",
+                url: Routing.generate('projectTrackTask', {trackedProjectId: trackedProjectId}),
+                data: {
+                    'taskId': taskId
+                },
+                dataType: 'JSON',
+                success: function (data, textStatus, xhr) {
+                    if (data.status == false) {
+                        $("#taskError").show().html(data.message);
+                    } else {
+                        $('#taskModal').hide();
+                        $("#taskError").hide();
+                        console.log("Added");
+                        loadMonth(dataModel().month, dataModel().year, true, false, dataModel().month, dataModel().year);
+                    }
+                }
+            });
+        });
+
+        function addTask(obj) {
+            console.log("Adding task to: " + obj.id);
+            var tokens = obj.id.split("_");
+            projectId = tokens[1];
+            trackedProjectId = tokens[2];
+
+            $.getJSON(Routing.generate('projectTasks', {projectId: projectId}), function (data) {
+                console.log("Got data");
+                console.log(data);
+
+                dataModel().availableTasks = data.tasks;
+                dataModel(dataModel());
+
+                $("#taskModal").show();
+            });
+        }
+
+        function deleteTask(obj) {
+            console.log("deleting object of id: " + obj.id);
+            trackedTaskId = obj.id.split("_")[1];
+            console.log("trackedTaskId: " + trackedTaskId);
+
+            if (confirm("This will delete all time entries that are associated with this task. Are you sure you want to delete this task?")) {
+                $.ajax({
+                    type: "DELETE",
+                    url: Routing.generate('deleteTrackedTask', {trackedTaskId: trackedTaskId}),
+                    dataType: 'JSON',
+                    success: function (data, textStatus, xhr) {
+                        if (data.status == false) {
+                            alert(data.message);
+                        } else {
+                            console.log("Deleted");
+                            loadMonth(dataModel().month, dataModel().year, true, false, dataModel().month, dataModel().year);
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+
+{% endblock javascripts %}

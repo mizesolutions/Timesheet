@@ -1,0 +1,30 @@
+security:
+
+  providers:
+      our_db_provider:
+              entity:
+                  class: UserBundle:User
+                  property: emailAddress
+                  # if you're using multiple entity managers
+                  # manager_name: customer
+
+        #userservice:
+            #id: app.user_provider
+
+  encoders:
+          UserBundle\Entity\User:
+            algorithm: bcrypt
+
+  firewalls:
+          main:
+              anonymous: ~
+              form_login:
+                  login_path: login
+                  check_path: login
+                  success_handler: authentication_handler
+                  failure_handler: authentication_handler
+                  require_previous_session: false
+
+              logout:
+                  path:   /logout
+                  target: /

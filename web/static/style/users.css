@@ -1,0 +1,102 @@
+body {
+   margin: 0;
+   width: 100%;
+   height: auto;
+   font-size: 16px;
+}
+
+table {
+   /*border-collapse: separate;*/
+   border: 0;
+   border-spacing: 5px 5px;
+   margin: 1.5em 0 0 0;
+}
+
+td {
+   padding: .2em;
+   border-style: solid;
+   border-color: #6e9499;
+   border-top: 0;
+   border-right: 0;
+   border-bottom: 1px;
+   border-left: 0;
+}
+
+h2 {
+   text-align: left;
+   font-weight: bold;
+   font-size: 20px;
+   font-family: 'Ubuntu', sans-serif;
+   float: left;
+}
+
+th {
+   padding-left: .1em;
+   border-bottom: 1px solid #213540;
+}
+
+.normal-text {
+   margin: 0;
+   padding: 0;
+   font-weight: normal;
+   font-style: normal;
+   font-size: 12;
+}
+
+.user-title {
+   width: 97%;
+   border-bottom: 3px solid #213540;
+}
+
+.user-input {
+   padding-left: .1em;
+   border-bottom: 1px dotted #91b9cf;
+   border-top: 0;
+   border-left: 0;
+   border-right: 0;
+}
+
+.user-input:hover {
+   background-color: #cce8f7;
+}
+
+.user-email {
+   min-width: 15em;
+   width: auto;
+}
+
+.user-roles {
+   min-width: 20em;
+   width: auto;
+}
+
+.action-icon {
+   cursor: pointer;
+}
+
+.sheet {
+   position: relative;
+   left: 1em;
+   margin: 0;
+   padding: 0;
+   width: 95%;
+}
+
+#cancel-btn {
+   display: none;
+}
+
+.on-top {
+   position: absolute;
+   top: 8.4em;
+   right: 6.5em;
+   margin: 0;
+   padding: 0;
+}
+
+.button-style {
+   margin: 0 0 .7em .5em;
+   padding: 0;
+   vertical-align: top;
+   width: 6em;
+}

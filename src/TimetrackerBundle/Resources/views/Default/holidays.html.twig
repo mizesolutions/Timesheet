@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+   Infinetix: Holidays
+{% endblock %}
+
+{% block stylesheets %}
+   <link rel="stylesheet" type="text/css" media="screen" href="{{ absolute_url(asset('static/style/holiday.css')) }}"/>
+{% endblock %}
+
+{% block body %}
+
+   <div class="page">
+      <div class="holiday-title">
+         <div class="holiday-text">Holidays
+            <span class="fake-link" title="Add Holiday" id="newHoliday">
+               {#<img type="image" src="{{ absolute_url(asset('static/assets/img/add-btn-3_25x25.jpg')) }}" width="10px" height="10px" title="Add Holiday"/>#}
+                <input class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round button-style" id="editCompany" type="button" value="Add Holiday">
+            </span>
+         </div>
+      </div>
+      <div class="select-div">
+         View Holidays:
+         <select class="yearselect select-box" id="year-select"></select>
+      </div>
+      <table>
+         <tr class="header-row">
+            <th>Name</th>
+            <th class="right-th">Date</th>
+            <th class="right-th">Hours</th>
+            {% for holiday in holidays %}
+               <tr>
+                  <td class="name">
+                     {{holiday.name}}
+                  </td>
+                  <td>
+                     {{holiday.month}}/{{holiday.day}}/{{holiday.year}}
+                  </td>
+                  <td>
+                     {{holiday.hours}}
+                  </td>
+               </tr>
+            {% endfor %}
+         </table>
+      </div>
+
+      <!-- Modal -->
+      <div class="reveal-modal medium on-top" style="display:none" id="modal" data-reveal tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+
+               <div class="modal-header">
+                  <h4 class="modal-title" id="modalTitle">New holiday</h4>
+               </div>
+
+               <div id="modalBody" class="modal-body"></div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-success" id="formSaveButton">Save changes</button>
+               </div>
+               <button type="button" class="btn btn-danger" id="modelClose">Close</button>
+            </div>
+
+         </div>
+         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+      </div>
+   </div>
+
+{% endblock body %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="{{ absolute_url(asset('static/yearSelect/year-select.js')) }}"></script>
+   <script type="text/javascript">
+
+       $(function() {
+
+           $('#newHoliday').click(function() {
+               $('#modalTitle').text('Add Holiday');
+               $('#modal').show();
+
+               $.get("{{ path('holidayForm', {'id': -1}) }}", function(data) {
+                   $('#modalBody').html(data);
+                   $('#formSaveButton').click(saveForm);
+               });
+           });
+       });
+
+       function saveForm() {
+         form = $('#modalBody .save-form');
+
+         $.ajax({
+           type: "POST",
+           url: "{{ path('holidayForm', {'id': -1}) }}",
+           data: form.serialize(),
+           dataType: 'JSON',
+           success: function(data, textStatus, xhr) {
+
+             if (data.status == false) {
+               $("#modalBody").html(data.message);
+               $('#formSaveButton').click(saveForm);
+             } else {
+               $('#modal').hide();
+               location.reload();
+             }
+
+           }
+         });
+
+       }
+
+       $('#modelClose').click(function() {
+         $('#modal').hide();
+       });
+
+      function getPassedYear() {
+         var year = '{{ year | json_encode | raw }}';
+         console.log(year);
+         var syear = year.replace(/['"]+/g, '');
+         console.log(syear);
+         return syear;
+      }
+
+      $('.yearselect').yearselect({
+         start: new Date().getFullYear() - 5,
+         end: new Date().getFullYear() + 5,
+         order: 'desc',
+         selected: getPassedYear()
+      });
+
+      $('#year-select').on('change', function() {
+         window.location.href = "/calendar/holidays/holidays/" + this.value;
+      });
+
+
+   </script>
+
+{% endblock javascripts %}

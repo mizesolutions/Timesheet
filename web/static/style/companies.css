@@ -1,0 +1,158 @@
+body {
+    margin: 0;
+    width: 100%;
+    height: auto;
+    font-size: 16px;
+}
+
+h2 {
+    margin: .3em 0 0 0;
+    text-align: left;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    vertical-align: text-bottom;
+    float: left;
+}
+
+h3 {
+    margin: 0 0 .4em 0;
+    text-align: left;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: 'Ubuntu', sans-serif;
+    float: left;
+}
+
+h4 {
+    float: left;
+}
+
+td {
+    vertical-align: text-bottom;
+}
+
+.company-title-row {
+    width: 97%;
+    border-bottom: 3px solid #213540;
+    margin: 0 0 .4em 0;
+    text-align: left;
+    float: left;
+}
+
+.h2-2 {
+    margin: .5em 0 0 .3em;
+}
+
+.addProject {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: -.5em;
+}
+
+.company-title {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    text-align: left;
+    float: left;
+    display: table-row;
+    font-weight: bold;
+}
+
+.slide-out {
+    margin: .2em 0 0 .7em;
+    padding: 0 .5em 0 0;
+    font-size: 14px;
+    font-family: 'Ubuntu', sans-serif;
+    float: left;
+    text-align: end;
+    border: 0;
+    display: none;
+}
+
+.button-style {
+    margin: 0 0 .7em .5em;
+    padding: 0;
+    vertical-align: top;
+}
+
+a.company-link {
+    color: #213540;
+    text-decoration: none;
+    float: left;
+    margin-bottom: 1em;
+}
+
+ul.company-list {
+    margin: 0;
+    padding: 0;
+    width: 20em;
+}
+
+li.company-item {
+    margin: 0;
+    padding: 0;
+    width: 10em;
+}
+
+.on-top {
+    position: absolute;
+    top: 6.8em;
+    left: 6.8em;
+    margin: 0;
+    padding: 0;
+}
+
+.company {
+    margin: 1em;
+    padding: 0;
+    width: 95%;
+    float: left;
+}
+
+.projects {
+    position: relative;
+    left: 2.5em;
+    margin: .5em 0 0 0;
+    padding-left: 1em;
+    width: 95%;
+    border-left: 1px solid #213540;
+}
+
+.project-item {
+    position: relative;
+    left: 2em;
+}
+
+td {
+    margin: 0;
+    padding: 0 1em 0 0;
+    vertical-align: top;
+}
+
+.fake-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button-space {
+    margin: 0 0 1em 0;
+    padding: 0;
+}
+
+.delete-button {
+    margin: 0;
+    padding: 0;
+    float: right;
+}
+
+.test {
+    margin: 0;
+    padding: 0;
+    float: left;
+}

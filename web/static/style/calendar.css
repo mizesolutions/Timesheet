@@ -1,0 +1,590 @@
+body {
+    margin: 0;
+    width: 100%;
+    height: auto;
+    font-size: 14px;
+}
+
+.td {
+    margin: 0;
+    padding: 0;
+    display: table-cell;
+    width: 1.9em;
+    background: #ffffff;
+}
+
+.td-column {
+    margin: 0;
+    padding: 0;
+    width: 2.7em;
+}
+
+tr {
+    margin: 0 0 .2em 0;
+    width: 2.5em;
+}
+
+h2 {
+    margin: 0 0 .4em 0;
+    text-align: left;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    text-align: left;
+}
+
+h3 {
+    margin: 0 0 .4em 0;
+    text-align: left;
+    font-weight: bold;
+    font-size: 18px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.sheet-title-row {
+    width: 97%;
+    border-bottom: 3px solid #213540;
+    margin: 0 0 .1em 0;
+    text-align: left;
+    float: left;
+}
+
+.sheet-title {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: 'Ubuntu', sans-serif;
+    text-align: left;
+    float: left;
+}
+
+.add-button {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+    font-size: 12px;
+    font-family: 'Ubuntu', sans-serif;
+    float: left;
+}
+
+.slide-out {
+    margin: .2em 0 0 .7em;
+    padding: 0 .5em 0 0;
+    font-size: 14px;
+    font-family: 'Ubuntu', sans-serif;
+    float: left;
+    text-align: end;
+    border: 0;
+    display: none;
+}
+
+.page {
+    margin: 1em 0 0 2em;
+}
+
+.sheet {
+    margin: 0;
+    float: left;
+}
+
+.calendar-head {
+    margin: 2px 0 0 0;
+    padding-top: 2px;
+}
+
+.calendar-date {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.calendar-text {
+    vertical-align: bottom;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.last-update {
+    margin: 0 0 .3em 0;
+    /*width: 95%;*/
+    font-weight: bold;
+}
+
+.weekend {
+    background-color: #babbbd;
+    margin: 0;
+    padding: 0;
+}
+
+.editable {
+    display: none;
+}
+
+.high-light {
+    margin: 0;
+    padding: 0;
+}
+
+.holiday {
+    margin-left: .15em;
+    padding: 0;
+    text-align: center;
+    background-color: #a6a6a6;
+    color: #1c691a;
+    border: 0;
+    font-weight: bold;
+}
+
+.weekday {
+    background-color: #fdfefb;
+    margin: 0;
+    padding: 0;
+}
+
+.fake-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.delete-task {
+    margin: 0 .2em 0 0;
+}
+
+.action-icon {
+    cursor: pointer;
+}
+
+.center {
+    float: none;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.header {
+    height: 70px;
+    border: 1px solid #000000;
+    background-color: #ffffff;
+}
+
+.day-holder {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin: 0 .75em 0 0;
+    padding: 0;
+    width: 1.9em;
+    background: #ffffff;
+}
+
+.delete-button {
+    position: relative;
+    top: -.1em;
+}
+
+.day-numbers {
+    margin: 0;
+    padding: 0;
+    width: 1.9em;
+    text-align: center;
+}
+
+.footer {
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+    margin: .2em 0 1em 0;
+    padding-bottom: 2.7em;
+    height: 2em;
+    background-color: #ffffff;
+}
+
+.row-footer {
+    z-index: 9999;
+    margin: .2em 0 .2em 0;
+    padding: .2em 0;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    background-color: #213540;
+    box-shadow: 4px 4px 6px -1px #acadb4;
+}
+
+.footer-title {
+    margin: 0 1em 0 1.9em;
+    padding-right: 0;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: 1.2em;
+    float: left;
+}
+
+.total-sm-column {
+    margin: 0 .601em 0 0;
+    padding: 0;
+    width: 1.9em;
+    border: 1px;
+    border-style: inset;
+    border-radius: 3px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.total-day-holder {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    width: 2em;
+}
+
+.total-row {
+    display: table;
+    margin: .2em 0 .2em 0;
+    border-color: #213540;
+    border-bottom: 1px solid;
+}
+
+.total-task-holder {
+    margin: 0;
+    padding: 0;
+    float: right;
+    width: 2.5em;
+    text-align: center;
+}
+
+.tt-holder {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin: .15em 3em 0 0;
+    padding: 0;
+    width: 2.5em;
+    text-align: center;
+    border: 1.5px solid #213540;
+    border-radius: 5px;
+}
+
+.totals {
+    margin: 0;
+    width: 1.7em;
+    text-align: center;
+}
+
+.task-name {
+    float: left;
+    margin: 0 2em 0 1em;
+    padding-right: 0;
+    font-size: 1.2em;
+}
+
+.row {
+    display: table;
+    width: 100%;
+    margin: .2em 0 .5em 0;
+    border-color: #213540;
+    border-bottom: 1px solid;
+}
+
+.button-style {
+    margin: 0 .2em 0 0;
+    padding: 0;
+    width: 7.5em;
+    float: left;
+}
+
+.bar-position {
+    margin: 0;
+    padding: 0;
+    float: left;
+    /*position: relative;*/
+    /*left: -2em;*/
+    /*top: -2em;*/
+}
+
+.row-position {
+    display: table-row;
+    position: relative;
+    left: 13.6em;
+    top: .3em;
+    margin: 0;
+    text-align: left;
+    float: left;
+}
+
+.day-row {
+    float: left;
+    margin: 0;
+    padding: 0;
+}
+
+.project-top {
+    position: absolute;
+    top: 10em;
+    left: 10em;
+    margin: 0;
+    padding: 0;
+    width: 20em;
+    z-index: 9999;
+}
+
+.on-top {
+    position: absolute;
+    top: 15em;
+    left: 15em;
+    z-index: 9999;
+    margin: 0;
+    padding: 0;
+}
+
+.add-task {
+    margin: 0;
+    width: 20em;
+}
+
+.btn-row {
+    margin: 0;
+    padding: 1em;
+    width: 100%;
+}
+
+.lg-column {
+    width: 13em;
+    /*min-width: 9.7em;*/
+    text-align: left;
+}
+
+.full-column {
+    margin: 0;
+    text-align: left;
+    width: 95%;
+    vertical-align: bottom;
+}
+
+.sm-column {
+    margin: 0 0 .2em 0;
+    width: 2.5em;
+}
+
+.date-style {
+    margin: 0 .5em .2em .5em;
+    width: 1.5em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.day-input {
+    margin: 0;
+    text-align: center;
+}
+
+.company-name {
+    margin-right: .2em;
+    font-weight: bold;
+    font-size: 1.5em;
+    float: left;
+}
+
+.project-name {
+    margin: .18em 0 0 0;
+    font-size: 1.3em;
+    float: left;
+}
+
+.project-item {
+    margin: 0;
+    width: 19em;
+    float: left;
+}
+
+.add-error {
+    margin: 0 .5em .2em 1em;
+    color: #ff0000;
+    font-weight: bold;
+}
+
+.task-title {
+    margin: 0 .3em 0 0;
+}
+
+.block {
+    display: inline-flex;
+    align-content: flex-start;
+    align-items: baseline;
+    justify-content: flex-start;
+}
+
+/*#################################################################*/
+
+/*####     MONTH PICKER CSS SECTION                            ####*/
+
+/*#################################################################*/
+
+/*The jQuery UI Month Picker Version 3.0.3
+https://github.com/KidSysco/jquery-ui-month-picker/
+
+Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see
+<http://www.gnu.org/licenses/gpl-3.0.txt>.*/
+
+table {
+    margin-left: 2%;
+    /*border-collapse: separate;*/
+    border: 0;
+    border-spacing: 5px 5px;
+}
+
+td {
+    padding: 3px;
+    border: 0;
+}
+
+.month-picker {
+    position: absolute;
+    z-index: 9999;
+    display: inline-block;
+}
+
+.month-picker table {
+    margin: 10px;
+    border-spacing: 5px 5px;
+    border-collapse: separate;
+}
+
+.month-picker td {
+    padding: 3px;
+}
+
+/*
+Prevents the button labels from maving sligtly to the left
+when applying the width CSS property to the buttons.
+See: .month-picker-month-table button { width: 4.3em; }
+*/
+
+.month-picker .ui-button-text {
+    padding: .4em 0;
+}
+
+.month-picker-header {
+    margin: 3px 3px 0 3px;
+}
+
+.month-picker-year-table {
+    width: 100%;
+    /*
+     Makes sure the next/previous/jump years buttons are not unnecessarily
+     selected if the user clicks them a couple of times fast.
+     */
+    -ms-user-select: none;
+    /* IE 10+ */
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/*
+The plugin uses buttons with a transparent background in the year-table
+(aka header) in order to look consistent with jQuery UI datepicker and to
+make the year title a button that blends into the heading in the default state.
+
+The plugin does this by removing the .ui-state-default class from (in MonthPicker.js)
+the a tags (buttons) which also ends up removing the 1px border that it applies.
+
+To prevent the button from resizing and moving everything around when you hover
+in and out, we use a carefully constructed selector, which gets overroden by the
+more specific .ui-state-hover/actove class selectors in the jquery-ui.css
+that apply the visible borders that we want.
+
+This selector applies a 1px transparent border that keeps the button
+in the same size, but it doesen't hide the borders that .ui-state-hover/actove give us.
+*/
+
+.month-picker-year-table a {
+    border: 1px solid transparent;
+}
+
+/*
+Sets the size of the next/previous buttons,
+and makes the buttons in the heading (year-table) sligtly bigger,
+and removes the pointer cursor from the buttons in the heading (year-table).
+*/
+
+.month-picker-year-table .ui-button {
+    margin: 0;
+    width: 1.5em;
+    height: 1.5em;
+    font-size: 1.1em;
+    cursor: default;
+}
+
+.month-picker-year-table .month-picker-title {
+    text-align: center;
+}
+
+.month-picker-year-table .month-picker-title .ui-button {
+    padding: .1em 0;
+    width: 100%;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+/*
+The buttons in the heading (year-table) are slightly shrinked, but because jQuery ui and
+the .month-picker .ui-button-text rule at the top of this CSS file apply some
+padding which results in the button text being moved to the bottom of
+the button.
+
+This rule removes the unnecessary padding so the text in
+the jump years button will be vericaly centred.
+*/
+
+.month-picker-year-table .ui-button-text {
+    padding: 0;
+}
+
+.month-picker-month-table td {
+    height: 35px;
+    text-align: center;
+}
+
+/*
+Makes sure the buttons stay in the same size when swithching
+to the Jump years menu.
+this also ensures that the entire menu dosen't resize itself
+in response to the slightly bigger buttons in the Jump years menu.
+ */
+
+.month-picker-month-table .ui-button {
+    margin: .2em;
+    width: 4.2em;
+}
+
+.month-picker-open-button {
+    width: 20px;
+    height: 20px;
+    vertical-align: bottom;
+}
+
+.month-picker-invalid-message {
+    display: none;
+    background-color: Yellow;
+}
+
+.month-picker-disabled {
+    background-color: #e1e1e1;
+}

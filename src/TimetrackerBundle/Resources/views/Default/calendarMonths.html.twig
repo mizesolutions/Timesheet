@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Infinetix: Calendar Months
+{% endblock %}
+
+{% block stylesheets %}
+
+  <link rel="stylesheet" type="text/css" media="screen" href="{{ absolute_url(asset('static/style/calendarMonth.css')) }}"/>
+
+{% endblock stylesheets %}
+
+{% block body %}
+  <div class="page">
+    <h2 class="calendar-title">Set Calendar Months</h2>
+    <table border="1" cellpadding="10" cellspacing="2">
+      <tr>
+        <td class="column first-column">Current</td>
+        <td class="column" data-bind="html: monthNames[calendarMonth.currentMonth-1]+' '+calendarMonth.currentYear"></td>
+        <td class="column"><input style="display:none" type="text" id="currentMonth" data-bind="value: calendarMonth.currentMonth + '/' + calendarMonth.currentYear"/></td>
+      </tr>
+      <tr>
+        <td class="column first-column">Start Day</td>
+        <td class="column" data-bind="html: calendarMonth.startDay +' '+ monthNames[calendarMonth.startMonth-1]+' '+calendarMonth.endYear"></td>
+        <td class="column"><input style="display:none" type="text" id="startMonth" data-bind="value: calendarMonth.startMonth + '/' + calendarMonth.startDay + '/' + calendarMonth.startYear"/></td>
+      </tr>
+      <tr>
+        <td class="column first-column">End Day</td>
+        <td class="column" data-bind="html: calendarMonth.endDay +' ' + monthNames[calendarMonth.endMonth-1]+' '+calendarMonth.endYear"></td>
+        <td class="column"><input style="display:none" type="text" id="endMonth" data-bind="value: calendarMonth.endMonth + '/' +calendarMonth.endDay + '/' + calendarMonth.endYear"/></td>
+      </tr>
+    </table>
+    <div class="response"></div>
+  </div>
+
+{% endblock body %}
+{% block javascripts %}
+
+  <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+  <script type="text/javascript" src="{{ absolute_url(asset('static/knockout/knockout.js')) }}"></script>
+  <script type="text/javascript" src="{{ absolute_url(asset('static/MonthPicker/MonthPicker.js')) }}"></script>
+
+  <script type="text/javascript">
+
+    var dataModel = null;
+    var monthNames = [
+      "January",
+      "Feburary",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+
+    $(function() {
+
+      $("#currentMonth").MonthPicker({
+        Position: {
+          my: "right-75% bottom-57%",
+          at: "right bottom",
+          of: "#currentMonth"
+        },
+        buttonImage: "{{ absolute_url(asset('static/assets/img/calendar.gif')) }}",
+        OnAfterChooseMonth: function(selectedDate) {
+          var month = selectedDate.getMonth() + 1;
+          var year = selectedDate.getFullYear();
+          console.log(month + "/" + year);
+          loadCalendarMonth(month, year);
+        }
+      });
+
+      $("#startMonth").datepicker({
+        beforeShow: function (input, inst) {
+          setTimeout(function () {
+              inst.dpDiv.css({
+                  top: 205,
+                  left: 247
+              });
+          }, 0);
+        },
+        showOn: "button",
+        buttonImage: "{{ absolute_url(asset('static/assets/img/calendar.gif')) }}",
+        buttonImageOnly: true,
+        buttonText: "Select Start Date",
+        onSelect: function(dateText, inst) {
+          var date = new Date(dateText);
+
+          var day = date.getDate();
+          var month = date.getMonth() * 1;
+          month += 1;
+          var year = date.getFullYear();
+
+          $.ajax({
+            type: "POST",
+            url: Routing.generate('calendarMonth.json', {
+              month: dataModel().calendarMonth.currentMonth,
+              year: dataModel().calendarMonth.currentYear
+            }),
+            data: "startDay=" + day + "&startMonth=" + month + "&startYear=" + year,
+            dataType: 'JSON',
+            success: function(data, textStatus, xhr) {
+
+              if (data.status == false) {
+                  $('.response').show().html(data.message);
+              } else {
+                loadCalendarMonth(dataModel().calendarMonth.currentMonth, dataModel().calendarMonth.currentYear);
+              }
+            }
+          });
+
+        }
+      });
+
+      $("#endMonth").datepicker({
+        beforeShow: function (input, inst) {
+          setTimeout(function () {
+              inst.dpDiv.css({
+                  top: 235,
+                  left: 247
+              });
+          }, 0);
+        },
+        showOn: "button",
+        buttonImage: "{{ absolute_url(asset('static/assets/img/calendar.gif')) }}",
+        buttonImageOnly: true,
+        buttonText: "Select End Date",
+        onSelect: function(dateText, inst) {
+          var date = new Date(dateText);
+
+          var day = date.getDate();
+          var month = date.getMonth() * 1;
+          month += 1;
+          var year = date.getFullYear();
+
+          $.ajax({
+            type: "POST",
+            url: Routing.generate('calendarMonth.json', {
+              month: dataModel().calendarMonth.currentMonth,
+              year: dataModel().calendarMonth.currentYear
+            }),
+            data: "endDay=" + day + "&endMonth=" + month + "&endYear=" + year,
+            dataType: 'JSON',
+            success: function(data, textStatus, xhr) {
+
+              if (data.status == false) {
+                  $('.response').show().html(data.message);
+              } else {
+                  $('.response').show().html(data.message);
+                loadCalendarMonth(dataModel().calendarMonth.currentMonth, dataModel().calendarMonth.currentYear);
+              }
+            }
+          });
+        }
+      });
+
+      var d = new Date();
+      loadCalendarMonth(d.getMonth() + 1, d.getFullYear());
+    });
+
+    function loadCalendarMonth(month, year) {
+      $.getJSON(Routing.generate('calendarMonth.json', {
+        month: month,
+        year: year
+      }), function(data) {
+
+        if (dataModel == null) {
+
+          dataModel = ko.observable(data);
+          ko.applyBindings(dataModel);
+
+        } else {
+          dataModel(data);
+        }
+      });
+    }
+
+  </script>
+
+{% endblock javascripts %}

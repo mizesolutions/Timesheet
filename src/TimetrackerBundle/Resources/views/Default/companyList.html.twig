@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Infinetix: Company List
+{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" media="screen" href="{{ absolute_url(asset('static/style/companies.css')) }}"/>
+{% endblock %}
+
+{% block body %}
+
+  <div class="page">
+    <div class="company-title-row">
+      <div class="company-title">Company List
+        <span class="fake-link" title="Add Company" id="newCompany">
+          {#<img type="image" src="{{ absolute_url(asset('static/assets/img/add-btn-3_25x25.jpg')) }}" width="10px" height="10px" title="Add Company"/>#}
+          <input class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round button-style" id="editCompany" type="button" value="Add Company">
+        </span>
+      </div>
+    </div>
+    <div class="company">
+      <table>
+        {% for company in companies %}
+          <tr>
+            <td>
+              <h2>{{company.name}}</h2>
+            </td>
+            <td>
+              <a class="company-link " href="{{ path('companyDetail', {'id': company.id}) }}" id="">
+                <input class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round button-style" id="editCompany" type="button" value="View/Edit {{ company.name }}">
+              </a>
+              {#<img type="image" id="editCompany" src="{{ absolute_url(asset('static/assets/img/company-view_50x50.png')) }}" width="20px" height="20px" title="View {{company.name}} Details"/>#}
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <!-- Modal -->
+    <div class="reveal-modal medium on-top" style="display:none" id="modal" data-reveal tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h4 class="modal-title" id="modalTitle">New Company</h4>
+          </div>
+
+          <div id="modalBody" class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" id="formSaveButton">Save changes</button>
+          </div>
+          <button type="button" class="btn btn-danger" id="modelClose">Close</button>
+        </div>
+
+      </div>
+      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+    </div>
+
+  {% endblock body %}
+
+  {% block javascripts %}
+
+    <script type="text/javascript">
+      $(function() {
+
+        $('#newCompany').click(function() {
+          $('#modalTitle').text('Add New Company');
+          $('#modal').show();
+
+          $.get("{{ path('companyForm', {'id': -1}) }}", function(data) {
+            $('#modalBody').html(data);
+            $('#formSaveButton').click(saveForm);
+          });
+        });
+      });
+
+      $('#modelClose').click(function() {
+        $('#modal').hide();
+      });
+
+
+      function saveForm() {
+        form = $('#modalBody .save-form');
+
+        $.ajax({
+          type: "POST",
+          url: "{{ path('companyForm', {'id': -1}) }}",
+          data: form.serialize(),
+          dataType: 'JSON',
+          success: function(data, textStatus, xhr) {
+
+            if (data.status == false) {
+              $("#modalBody").html(data.message);
+              $('#formSaveButton').click(saveForm);
+            } else {
+              $('#modal').hide();
+              location.reload();
+            }
+
+          }
+        });
+
+      }
+    </script>
+
+  {% endblock javascripts %}

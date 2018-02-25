@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Infinetix: Roles
+{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" media="screen" href="{{ absolute_url(asset('static/style/roles.css')) }}"/>
+{% endblock stylesheets %}
+
+{% block body %}
+  <div class="page">
+    <h2 class="roles-title">Roles</h2>
+    <table data-bind="foreach:roles">
+      <tr>
+        <td>
+          <span data-bind="html:name"></span>
+        </td>
+        <td>
+          <input type="image" src="{{ absolute_url(asset('static/assets/img/Users-delete_50x50.png')) }}" width="25px" height="25px" title="Delete" data-bind="attr:{'id':'role_'+id}" onclick="deleteRole(this)"/>
+        </td>
+      </tr>
+    </table>
+    <br/>
+    <button onclick="addNewRole()">Add Role</button>
+  </div>
+
+{% endblock body %}
+{% block javascripts %}
+
+  <script type="text/javascript" src="{{ absolute_url(asset('static/knockout/knockout.js')) }}"></script>
+
+  <script type="text/javascript">
+
+    var dataModel = null;
+
+    $(function() {
+
+      loadRoles();
+
+    });
+
+    function loadRoles() {
+      $.getJSON("{{ path('roles.json') }}", function(data) {
+
+        if (dataModel == null) {
+
+          dataModel = ko.observable(data);
+          ko.applyBindings(dataModel);
+
+        } else {
+          dataModel(data);
+        }
+      });
+    }
+
+    function deleteRole(obj) {
+
+      if (confirm("Are you sure?")) {
+        var roleId = obj.id.split("role_")[1];
+
+        $.ajax({
+          type: "DELETE",
+          url: "{{ path('roles.json') }}",
+          data: "id=" + roleId,
+          dataType: 'JSON',
+          success: function(data, textStatus, xhr) {
+
+            if (data.status == false) {
+              alert(data.message);
+            } else {
+              loadRoles();
+            }
+          }
+        });
+      }
+      loadRoles();
+    }
+
+    function addNewRole() {
+      var newRoleName = prompt("New Role Name");
+
+      if (newRoleName == null)
+        return;
+      if (newRoleName.length == 0)
+        return;
+
+      $.ajax({
+        type: "POST",
+        url: "{{ path('roles.json') }}",
+        data: "name=" + newRoleName,
+        dataType: 'JSON',
+        success: function(data, textStatus, xhr) {
+
+          if (data.status == false) {
+            alert(data.message);
+          } else {
+            loadRoles();
+          }
+
+        }
+      });
+    }
+  </script>
+
+{% endblock javascripts %}

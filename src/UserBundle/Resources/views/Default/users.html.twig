@@ -1,0 +1,288 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Infinetix: Users
+{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" media="screen" href="{{ absolute_url(asset('static/style/users.css')) }}"/>
+{% endblock stylesheets %}
+
+{% block body %}
+  <div class="page">
+    <h2 class="user-title">Users</h2>
+      <span class="fake-link" title="Add User" id="add-btn" >
+        {#<img type="image" src="{{ absolute_url(asset('static/assets/img/add-btn-3_25x25.jpg')) }}" width="10px" height="10px" title="Add User" onclick="addNewUser()"/>#}
+         <input class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round button-style" value="Add User" onclick="addNewUser()">
+      </span>
+      <span class="fake-link" title="Cancel" id="cancel-btn" >
+        {#<img type="image" src="{{ absolute_url(asset('static/assets/img/delete.png')) }}" width="10px" height="10px" title="Cancel" onclick="cancelAdd()"/>#}
+         <input class="w3-btn w3-ripple w3-red w3-small w3-padding-small w3-round button-style" value="Cancel" onclick="cancelAdd()">
+      </span>
+    <div class="sheet">
+      <table>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email Address</th>
+          <th>Roles</th>
+          <th>Actions</th>
+        </tr>
+        <tbody data-bind="foreach:users">
+          <tr>
+            <td><input class="user-input" type="text" data-bind="value:firstName" title="Click To Edit" placeholder="Enter First Name"/></td>
+            <td><input class="user-input" type="text" data-bind="value:lastName" title="Click To Edit" placeholder="Enter Last Name"/></td>
+            <td><input class="user-input user-email" type="text" data-bind="value:emailAddress" title="Click To Edit" placeholder="Enter Email Address"/></td>
+            <td class="user-roles"><span data-bind="html: roles"/></td>
+            <td class="w3-bar">
+              {#<input class="action-icon" type="image" src="{{ absolute_url(asset('static/assets/img/Users-pw_50x50.png')) }}" title="Change User Password" width="25px" height="25px" data-bind="attr:{'id':'password_'+$index()}" onclick="resetPassword(this)"/>#}
+              <input class="w3-btn w3-ripple w3-amber w3-small w3-padding-small w3-round button-style" value="Password" data-bind="attr:{'id':'password_'+$index()}" onclick="resetPassword(this)">
+              {#<input class="action-icon" type="image" src="{{ absolute_url(asset('static/assets/img/Users-roles_50x50.png')) }}" title="Set User Roles" width="25px" height="25px" data-bind="attr:{'id':'roles_'+$index()}" onclick="changeRoles(this)"/>#}
+              <input class="w3-btn w3-ripple w3-blue w3-small w3-padding-small w3-round button-style"  value="Roles" data-bind="attr:{'id':'roles_'+$index()}" onclick="changeRoles(this)">
+              {#<input class="action-icon" type="image" src="{{ absolute_url(asset('static/assets/img/Users-Save_50x50.png')) }}" title="Save User" width="25px" height="25px" data-bind="attr:{'id':'user_'+$index()}" onclick="saveUser(this)"/>#}
+              <input class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round button-style" value="Save" data-bind="attr:{'id':'user_'+$index()}" onclick="saveUser(this)">
+              {#<input class="action-icon" type="image" src="{{ absolute_url(asset('static/assets/img/Users-delete_50x50.png')) }}" title="Delete User" width="25px" height="25px" data-bind="attr:{'id':'user_'+$index()}" onclick="deleteUser(this)"/>#}
+              <input class="w3-btn w3-ripple w3-red w3-small w3-padding-small w3-round button-style" value="Delete" data-bind="attr:{'id':'user_'+$index()}" onclick="deleteUser(this)">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Role Modal -->
+    <div class="reveal-modal medium on-top" style="display:none" id="editRolesModal" data-reveal tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h4 class="modal-title" id="editRolesTitle">Edit Roles</h4>
+          </div>
+
+          <div class="modal-body">
+
+            <table data-bind="foreach:editingRoles">
+              <tr>
+                <td><input type="checkbox" data-bind="checked: enabled"></td>
+                <td data-bind="html:name"></td>
+              </tr>
+
+            </table>
+
+          </div>
+          <button type="button" class="btn btn-success" onclick="$('#editRolesModal').hide()">Close</button>
+          <button type="button" class="btn btn-success" onclick="saveEditedRoles()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock body %}
+{% block javascripts %}
+
+  <script type="text/javascript" src="{{ absolute_url(asset('static/knockout/knockout.js')) }}"></script>
+
+  <script type="text/javascript">
+
+
+    $("#add-btn").click(function() {
+      $("#cancel-btn").css('display', 'inline');
+    });
+
+    var dataModel = null;
+    var editingIndex = 0;
+
+    $(function() {
+
+      loadUsers();
+
+    });
+
+    function loadUsers() {
+
+      $.getJSON("{{ path('users.json') }}", function(data) {
+
+        data.editingRoles = [];
+
+        if (dataModel == null) {
+
+          dataModel = ko.observable(data);
+          ko.applyBindings(dataModel);
+          $("#cancel-btn").css('display', 'none');
+        } else {
+          dataModel(data);
+          $("#cancel-btn").css('display', 'none');
+        }
+      });
+    }
+
+    function changeRoles(obj) {
+      editingIndex = obj.id.split("roles_")[1];
+
+      var editingRoles = [];
+
+      for (var i = 0; i < dataModel().roles.length; i++) {
+
+        var editingRole = {};
+        editingRole.name = dataModel().roles[i].name;
+        editingRole.enabled = false;
+
+        for (var j = 0; j < dataModel().users[editingIndex].roles.length; j++) {
+          if (dataModel().users[editingIndex].roles[j] == dataModel().roles[i].name) {
+            editingRole.enabled = true;
+            break;
+          }
+        }
+
+        editingRoles.push(editingRole);
+
+      }
+
+      dataModel().editingRoles = editingRoles;
+      dataModel(dataModel());
+
+      $("#editRolesModal").show();
+    }
+
+    function saveEditedRoles() {
+      for (var i = 0; i < dataModel().editingRoles.length; i++) {
+        var wasEnabled = false;
+        for (var j = 0; j < dataModel().users[editingIndex].roles.length; j++) {
+          if (dataModel().editingRoles[i].name == dataModel().users[editingIndex].roles[j]) {
+            wasEnabled = true;
+          }
+        }
+
+        if ((dataModel().editingRoles[i].enabled == true) && (wasEnabled == false)) {
+          console.log("Adding " + dataModel().editingRoles[i].name);
+
+          $.ajax({
+            type: "POST",
+            url: "{{ path('userRoles.json') }}",
+            data: "userId=" + dataModel().users[editingIndex].id + "&roleName=" + dataModel().editingRoles[i].name,
+            dataType: 'JSON',
+            success: function(data, textStatus, xhr) {
+
+              if (data.status == false) {
+                alert(data.message);
+              } else {
+                loadUsers();
+              }
+            }
+          });
+
+        } else if ((dataModel().editingRoles[i].enabled == false) && (wasEnabled == true)) {
+          console.log("Removing " + dataModel().editingRoles[i].name);
+
+          $.ajax({
+            type: "DELETE",
+            url: "{{ path('userRoles.json') }}",
+            data: "userId=" + dataModel().users[editingIndex].id + "&roleName=" + dataModel().editingRoles[i].name,
+            dataType: 'JSON',
+            success: function(data, textStatus, xhr) {
+
+              if (data.status == false) {
+                alert(data.message);
+              } else {
+                loadUsers();
+              }
+            }
+          });
+
+        }
+      }
+
+      $('#editRolesModal').hide()
+    }
+
+    function deleteUser(obj) {
+
+      if (confirm("Are you sure?")) {
+        var index = obj.id.split("user_")[1];
+        var user = dataModel().users[index];
+
+        $.ajax({
+          type: "DELETE",
+          url: "{{ path('users.json') }}",
+          data: "id=" + user.id,
+          dataType: 'JSON',
+          success: function(data, textStatus, xhr) {
+
+            if (data.status == false) {
+              alert(data.message);
+            } else {
+              loadUsers();
+            }
+          }
+        });
+      }
+      loadUsers();
+    }
+
+    function resetPassword(obj) {
+      var index = obj.id.split("password_")[1];
+      console.log("Resetting password for user: " + index);
+      var user = dataModel().users[index];
+
+      if (user.id == -1) {
+        alert("Please save user before assigning password");
+        return;
+      }
+
+      var newPassword = prompt("Enter new password");
+
+      if (newPassword != null) {
+        $.ajax({
+          type: "POST",
+          url: "{{ path('users.json') }}",
+          data: "id=" + user.id + "&password=" + newPassword,
+          dataType: 'JSON',
+          success: function(data, textStatus, xhr) {
+            if (data.status == false) {
+              alert(data.message);
+            } else {
+              loadUsers();
+            }
+          }
+        });
+      } else {
+        loadUsers();
+      }
+    }
+
+    function saveUser(obj) {
+      var index = obj.id.split("user_")[1];
+      var user = dataModel().users[index];
+
+      $.ajax({
+        type: "POST",
+        url: "{{ path('users.json') }}",
+        data: "id=" + user.id + "&emailAddress=" + user.emailAddress + "&firstName=" + user.firstName + "&lastName=" + user.lastName,
+        dataType: 'JSON',
+        success: function(data, textStatus, xhr) {
+
+          if (data.status == false) {
+            alert(data.message);
+          } else {
+            loadUsers();
+          }
+        }
+      });
+    }
+
+    function addNewUser() {
+      var newUser = {};
+      newUser.firstName = "";
+      newUser.lastName = "";
+      newUser.emailAddress = "";
+      newUser.id = -1;
+      newUser.roles = [];
+
+      dataModel().users.push(newUser);
+      dataModel(dataModel());
+    }
+
+    function cancelAdd() {
+      loadUsers();
+    }
+  </script>
+
+{% endblock javascripts %}

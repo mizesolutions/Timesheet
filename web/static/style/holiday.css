@@ -1,0 +1,126 @@
+body {
+   margin: 0;
+   width: 100%;
+   height: auto;
+   font-size: 16px;
+}
+
+h2 {
+   margin: 0 0 .4em 0;
+   text-align: left;
+   font-weight: bold;
+   font-size: 20px;
+   font-family: 'Ubuntu', sans-serif;
+}
+
+h3 {
+   margin: 0 0 .4em 0;
+   text-align: left;
+   font-weight: bold;
+   font-size: 18px;
+   font-family: 'Ubuntu', sans-serif;
+}
+
+table {
+   margin: 0 0 0 2em;
+}
+
+th {
+   margin: 0;
+   padding: 0 1em .2em 0;
+}
+
+td {
+   margin: 0 1.5em 0 0;
+   padding: .2em 1em 0 0;
+   vertical-align: top;
+   text-align: right;
+}
+
+.right-th {
+   text-align: right;
+}
+
+.header-row {
+   margin: 0;
+   padding: 0;
+   border-bottom: 1.5px solid #213540;
+}
+
+.name {
+   text-align: left;
+   font-style: normal;
+   font-weight: bold;
+}
+
+.holiday-title {
+   width: 97%;
+   border-bottom: 3px solid #213540;
+   margin: 0 0 .4em 0;
+   text-align: left;
+   float: left;
+}
+
+.button-style {
+   margin: 0 0 .2em .5em;
+   padding: 0;
+   vertical-align: top;
+}
+
+.holiday-text {
+   margin: 0;
+   padding: 0;
+   text-align: left;
+   font-weight: bold;
+   font-size: 20px;
+   font-family: 'Ubuntu', sans-serif;
+   text-align: left;
+   float: left;
+}
+
+.slide-out {
+   margin: .2em 0 0 .7em;
+   padding: 0 .5em 0 0;
+   font-size: 14px;
+   font-family: 'Ubuntu', sans-serif;
+   float: left;
+   text-align: end;
+   border: 0;
+   display: none;
+}
+
+.select-div {
+   margin: 0 0 .5em 1em;
+   text-align: left;
+   font-weight: bold;
+   font-size: 18px;
+   font-family: 'Ubuntu', sans-serif;
+   border-bottom: 2px solid #213540;
+   width: 11em;
+}
+
+.select-box {
+   border: 0;
+   font-size: 16px;
+   font-family: 'Ubuntu', sans-serif;
+   font-weight: bold;
+   color: #ab9c24;
+}
+
+.on-top {
+   position: absolute;
+   top: 6.8em;
+   left: 6.8em;
+   margin: 0;
+   padding: 0;
+}
+
+.holiday {
+   margin: 0;
+   padding: 0;
+}
+
+.fake-link {
+   text-decoration: none;
+   cursor: pointer;
+}

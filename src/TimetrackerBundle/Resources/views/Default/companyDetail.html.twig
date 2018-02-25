@@ -1,0 +1,426 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Infinetix: Company Details
+    {{ company.name }}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <meta property="og:type" content="profile">
+    <meta property="og:title" content="{{ company.name }}">
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="{{ absolute_url(asset('static/style/companies.css')) }}"/>
+{% endblock %}
+
+{% block body %}
+
+    <div class="page">
+        <div class="company-title">
+            <td>
+                <a class="company-link" href="{{ path('companyList') }}">
+                    <img type="image" src="{{ absolute_url(asset('static/assets/img/back-btn_50x50.jpg')) }}"
+                         width="23px" height="23px" title="View Company List"/>
+                </a>
+            </td>
+            <td>
+                <h2 class="h2-2">
+                    &nbsp;Company:
+                    {{ company.name }}
+                </h2>
+            </td>
+        </div>
+        <div class="company">
+            <table>
+                <tr>
+                    <td>
+                        <h2 class="page-heading can-edit">{{ company.name }}</h2>
+                    </td>
+                    <td>
+                        <input class="w3-btn w3-ripple w3-blue-grey w3-small w3-padding-small w3-round button-style"
+                               id="editCompany" type="button" value="Edit Company Information">
+                    </td>
+                </tr>
+            </table>
+
+            <div class="projects">
+                <h3>
+                    Projects
+                </h3>
+                <span class="fake-link addProject" title="Add Project" id="newProject">
+            {#<img type="image" src="{{ absolute_url(asset('static/assets/img/add-btn-3_25x25.jpg')) }}" width="13px" height="13px" title="Add Project"/>#}
+                    <input class="w3-btn w3-ripple w3-green w3-small w3-padding-small w3-round button-style"
+                           id="editCompany" type="button" value="Add Project">
+          </span>
+                <table class="td-company-projects project-item">
+                    <tbody>
+                    {% for project in company.projects %}
+                        <tr>
+                            <td>
+                                {{ project.name }}
+                            </td>
+                            <td>
+                                {#<input class="company-link editProject" id="{{ project.id }}" type="image" src="{{ absolute_url(asset('static/assets/img/company-edit_50x50.png')) }}" width="20px" height="20px" title="Edit Project Information" onclick="editProject(this);"/>#}
+                                <input class="w3-btn w3-ripple w3-blue-gray w3-small w3-padding-small w3-round button-style"
+                                       id="{{ project.id }}" type="button" value="Edit Project"
+                                       onclick="editProject(this);">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="test"></div>
+    </div>
+    <!-- Edit Company Modal -->
+    <div class="reveal-modal medium on-top" style="display:none" id="modal" data-reveal tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Company</h4>
+                    <span class="delete-button">
+            <button type="button" class="btn btn-danger" id="formDeleteButton">Delete Company</button>
+          </span>
+                </div>
+
+                <div id="modalBody" class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="formSaveButton">Save changes</button>
+                </div>
+                <button type="button" class="btn btn-danger" id="modalClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Project Modal -->
+    <div class="reveal-modal medium on-top" style="display:none" id="editProjectModal" data-reveal tabindex="-1"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Project</h4>
+                    <span class="delete-button">
+            <button type="button" class="btn btn-danger" id="editProjectFormDeleteButton">Delete Project</button>
+          </span>
+                </div>
+
+                <div id="editProjectModalBody" class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="editProjectFormSaveButton">Save changes</button>
+                </div>
+                <button type="button" class="btn btn-danger" id="editProjectModalClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Project Modal -->
+    <div class="reveal-modal medium on-top" style="display:none" id="modalProject" data-reveal tabindex="-1"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Add New Project</h4>
+                </div>
+
+                <div id="projectModalBody" class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="projectFormSaveButton">Save changes</button>
+                </div>
+                <button type="button" class="btn btn-danger" id="projectModalClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div class="reveal-modal medium on-top" style="display:none" id="contactModal" data-reveal tabindex="-1"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h4 class="modal-title">New Contact</h4>
+                </div>
+
+                <div id="contactModalBody" class="modal-body"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="contactFormSaveButton">Save changes</button>
+                </div>
+
+                <button type="button" class="btn btn-danger" id="contactModalClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}
+
+{% block javascripts %}
+
+    <script type="text/javascript" src="{{ absolute_url(asset('static/knockout/knockout.js')) }}"></script>
+    <script type="text/javascript">
+
+        var dataModel;
+
+        $('.addProject').attr('id', "newProject");
+        $('.editCompany').attr('id', "editCompany");
+
+        $('#modalClose').click(function () {
+            $('#modal').hide();
+            $('.addProject').attr('id', "newProject");
+            $('.editCompany').attr('id', "editCompany");
+        });
+
+        $('#projectModalClose').click(function () {
+            $('#modalProject').hide();
+            $('.addProject').attr('id', "newProject");
+            $('.editCompany').attr('id', "editCompany");
+        });
+
+        $('#editProjectModalClose').click(function () {
+            $('#editProjectModal').hide();
+            $('.addProject').attr('id', "newProject");
+            $('.editCompany').attr('id', "editCompany");
+        });
+
+
+        $('#editCompany').click(function () {
+            $('#newProject').attr('id', "disabled");
+            $('#editCompany').attr('id', "disabled");
+            $('#modal').show();
+
+            console.log("edit co: " + "{{ path('companyForm', {'id': company.id}) }}");
+            $.get("{{ path('companyForm', {'id': company.id}) }}", function (data) {
+                console.log("success: " + data);
+                $('#modalBody').html(data);
+                $('#formSaveButton').click(saveEditedCompany);
+                $('#formDeleteButton').click(deleteCompany);
+            });
+        });
+
+
+        function saveEditedCompany() {
+            form = $('#saveForm');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ path('companyForm', {'id': company.id}) }}",
+                data: form.serialize(),
+                dataType: 'JSON',
+                success: function (data, textStatus, xhr) {
+                    if (data.status == false) {
+                        $("#modalBody").html(data.message);
+                        $('#modal').hide();
+                        $('#formSaveButton').click(saveForm);
+                    } else {
+                        $('#modal').hide();
+                        $('.addProject').attr('id', "newProject");
+                        $('.editCompany').attr('id', "editCompany");
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+        $('#newProject').click(function () {
+
+            $('#newProject').attr('id', "disabled");
+            $('#editCompany').attr('id', "disabled");
+            $('#modalProject').show();
+
+            $.get("{{ path('projectForm', {'companyId':company.id, 'projectId': -1}) }}", function (data) {
+                $('#projectModalBody').html(data);
+                $('#projectFormSaveButton').click(saveNewProject);
+
+                $('.add-contact-button').click(function () {
+
+                    $('#modalProject').hide();
+                    $('#newProject').attr('id', "disabled");
+                    $('#editCompany').attr('id', "disabled");
+                    $('#contactModal').show();
+
+                    $('#contactModalClose').click(function () {
+                        $('#modalProject').show();
+                        $('#contactModal').hide();
+                    });
+
+                    $.get("{{ path('contactForm', {'id':-1}) }}", function (data) {
+                        $('#contactModalBody').html(data);
+                        $('#contactFormSaveButton').click(saveNewClient);
+
+                    });
+                });
+
+            });
+        });
+
+        function saveNewClient() {
+            console.log("saving new client");
+            var form = $('#contactModalBody .save-form');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ path('contactForm', {'id': -1}) }}",
+                data: form.serialize(),
+                dataType: 'JSON',
+                success: function (data, textStatus, xhr) {
+                    if (data.status == false) {
+                        $("#contactModalBody").html(data.message);
+                        $('#contactFormSaveButton').click(saveNewClient);
+                    } else {
+                        $('#modalProject').show();
+                        $('#contactModal').hide();
+                    }
+                }
+            });
+        }
+
+        function saveNewProject() {
+            form = $('#projectModalBody .save-form');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ path('projectForm', {'companyId':company.id, 'projectId': -1}) }}",
+                data: form.serialize(),
+                dataType: 'JSON',
+                success: function (data, textStatus, xhr) {
+
+                    if (data.status == false) {
+                        $("#projectModalBody").html(data.message);
+                        $('#modalProject').hide();
+                        $('#projectFormSaveButton').click(saveForm);
+                    } else {
+                        $('#modalProject').hide();
+                        $('.addProject').attr('id', "newProject");
+                        $('.editCompany').attr('id', "editCompany");
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+        function deleteCompany() {
+
+            if (confirm("This will delete the Company along with its associated Projects. This will NOT delete the Company and Projects that are being tracked. Are you sure you want to delete this Company?")) {
+
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ path('companyForm', {'id': company.id}) }}",
+                    dataType: 'JSON',
+                    success: function (data, textStatus, xhr) {
+                        if (data.status == false) {
+                            alert(data.message);
+                        } else {
+                            window.location.assign("../company")
+                        }
+                    }
+                });
+            }
+        }
+
+        var pid;
+        //    var builtPath;
+
+        function editProject(obj) {
+            console.log("projectId: " + obj.id);
+            pid = obj.id;
+            builtPath = "/calendar/company/" + {{ company.id }} +"/editProject/" + pid + "/form";
+//        @Route("/company/{companyId}/project/{projectId}/form", name="projectForm")
+
+            console.log("url: " + builtPath);
+
+            $('#newProject').attr('id', "disabled");
+            $('#editCompany').attr('id', "disabled");
+            $('#editProjectModal').show();
+
+            $.get(builtPath, function (data, pid) {
+                if (data.status == false) {
+                    $('#editProjectModalBody').html(data.message);
+                } else {
+                    console.log(data);
+                    console.log("pid: " + pid );
+                    console.log("data.pid: " + data.pid );
+
+                    $('#editProjectModalBody').html(data);
+                    $('#editProjectFormSaveButton').click(saveEditedProject(data.pid));
+                    $('#formDeleteButton').click(deleteProject);
+
+                    $('.add-contact-button').click(function () {
+
+                        $('#modalProject').hide();
+                        $('#newProject').attr('id', "disabled");
+                        $('#editCompany').attr('id', "disabled");
+                        $('#contactModal').show();
+
+                        $('#contactModalClose').click(function () {
+                            $('#modalProject').show();
+                            $('#contactModal').hide();
+                        });
+
+                        $.get("{{ path('contactForm', {'id':-1}) }}", function (data) {
+                            $('#contactModalBody').html(data);
+                            $('#contactFormSaveButton').click(saveNewClient);
+
+                        });
+                    });
+                }
+            });
+        }
+
+        function saveEditedProject(pid) {
+            form = $('#projectModalBody .save-form');
+            console.log("projectId: " + pid );
+            {#builtPath = "/calendar/company/" + {{ company.id }} +"/project/" + pid + "/form";#}
+
+            {#console.log("url: " + builtPath);#}
+            {#$.ajax({#}
+                {#type: "POST",#}
+                {#url: builtPath,#}
+                {#data: form.serialize(),#}
+                {#dataType: 'JSON',#}
+                {#success: function (data, textStatus, xhr) {#}
+
+                    {#if (data.status == false) {#}
+                        {#$("#editProjectModalBody").html(data.message);#}
+                        {#$('#editProjectModal').hide();#}
+                    {#} else {#}
+                        {#$('#editProjectModal').hide();#}
+                        {#$('.addProject').attr('id', "newProject");#}
+                        {#$('.editCompany').attr('id', "editCompany");#}
+                        {#location.reload();#}
+                    {#}#}
+                {#}#}
+            {#});#}
+        }
+
+
+        function deleteProject() {
+
+            if (confirm("This will delete the Project. This will NOT delete the Projects that are being tracked. Are you sure you want to delete this Project?")) {
+
+                {#$.ajax({#}
+                    {#type: "DELETE",#}
+                    {#url: "{{ path('companyForm', {'id': company.id}) }}",#}
+                    {#dataType: 'JSON',#}
+                    {#success: function (data, textStatus, xhr) {#}
+                        {#if (data.status == false) {#}
+                            {#alert(data.message);#}
+                        {#} else {#}
+                            {#window.location.assign("../company")#}
+                        {#}#}
+                    {#}#}
+                {#});#}
+            }
+        }
+
+
+    </script>
+
+{% endblock javascripts %}

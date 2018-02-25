@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>
+        {% block title %}Infinetix{% endblock %}
+    </title>
+
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="{{ absolute_url(asset('static/bootstrap/css/bootstrap.css')) }}"/>
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="{{ absolute_url(asset('static/jquery-ui/jquery-ui.css')) }}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ absolute_url(asset('static/w3_css/w3.css')) }}"/>
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="{{ absolute_url(asset('static/style/infinetix.css')) }}"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto:700|Titillium+Web|Ubuntu"
+          rel="stylesheet"/>
+    <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('static/assets/img/favicon.ico')) }}"/>
+
+    {% block stylesheets %}{% endblock %}
+
+</head>
+<body>
+
+<div class="globalHeader">
+    <div class="logo">
+        <a href="{{ path('calendarIndex') }}">
+            <img title="Infinetix Corp. Timesheet"
+                 src="{{ absolute_url(asset('static/assets/img/201707-INFX-Logo-RGB_color-300x49.png')) }}"/>
+        </a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="navMenu">
+        <ul class="nav navbar-nav navbar-right">
+            {% if is_granted("ROLE_USER") %}
+
+                <!-- <li class="dropdown"> -->
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{{ app.user.username }}
+                        <span class="caret"></span>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ path('calendarIndex') }}">Time Sheet</a>
+                        </li>
+                        <li>
+                            <a href="#">User Reports</a>
+                        </li>
+
+                        {% if is_granted("ROLE_REPORTS") %}
+                            <li role="separator" class="divider"></li>
+                            <li class="list-title">
+                                Accounting Tasks:
+                            </li>
+                            <li>
+                                <a href="#">Reports</a>
+                            </li>
+                        {% endif %}
+
+                        {% if is_granted("ROLE_ADMIN") %}
+                            <li role="separator" class="divider"></li>
+                            <li class="list-title">
+                                Admin Tasks:
+                            </li>
+                            <div class="admin-tasks"></div>
+                            <li>
+                                <a href="{{ path('calendarMonthsIndex') }}">Calendar Months</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('companyList') }}">Companies</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('holidayList') }}">Holidays</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('userIndex') }}">Users</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('roleIndex') }}">Roles</a>
+                            </li>
+                        {% endif %}
+
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="/logout">Logout</a>
+                        </li>
+                    </ul>
+                </li>
+
+            {% else %}
+                <div class="navMenu">
+                    <div class="navbar-form navbar-right">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="username" placeholder="Infinetix Email">
+                        </div>
+                        <div class="form-group">
+                            <input id="password" type="password" class="form-control" id="password"
+                                   placeholder="Password">
+                        </div>
+                        <input id="login" type="button" class="btn btn-default" onclick="login()" value="Log In"/>
+                    </div>
+                </div>
+            {% endif %}
+
+        </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+</div>
+<!-- class="globalHeader" -->
+
+{% if is_granted("ROLE_USER") %}
+    {% block body %}{% endblock %}
+{% else %}
+    <div class="homePage">
+        <div class="heroSection">
+            <div class="textBox1">
+                <h1>Timesheet</h1>
+            </div>
+            <div class="textBox2">
+                <h2 class="log-in">Please log in with your user name and password.</h2>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<script type="text/javascript" src="{{ absolute_url(asset('static/jquery/jquery-2.2.4.min.js')) }}"></script>
+<script type="text/javascript" src="{{ absolute_url(asset('static/jquery/jquery-scrolltofixed.min.js')) }}"></script>
+<script type="text/javascript" src="{{ absolute_url(asset('static/jquery-ui/jquery-ui.min.js')) }}"></script>
+<script type="text/javascript" src="{{ absolute_url(asset('static/bootstrap/js/bootstrap.min.js')) }}"></script>
+<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+{% if is_granted("ROLE_USER") %}
+    {% block javascripts %}{% endblock %}
+{% endif %}
+<script type="text/javascript">
+
+    $('.globalHeader').scrollToFixed();
+
+    $("#password").keyup(function (event) {
+        if (event.keyCode == 13) {
+            $("#login").click();
+        }
+    });
+
+    function login() {
+        $.ajax({
+            type: "POST",
+            url: "{{ path('login') }}",
+            data: "_username=" + $("#username").val() + "&_password=" + $("#password").val(),
+            dataType: 'JSON',
+            success: function (data, textStatus, xhr) {
+                console.log(data);
+
+                if (data.success) {
+                    location.reload();
+                    //console.log("Success!?");
+                } else {
+                    alert(data.message);
+                }
+            },
+            failure: function () {
+                console.log("Failure!");
+            }
+        }).done(function () {
+            console.log("done");
+        });
+    }
+</script>
+
+</body>
+</html>

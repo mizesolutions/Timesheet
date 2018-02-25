@@ -1,0 +1,26 @@
+timetracker_calendar_month:
+    resource: "@TimetrackerBundle/Controller/CalendarMonthController.php"
+    type:     annotation
+
+user:
+    resource: "@UserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+timetracker:
+    resource: "@TimetrackerBundle/Controller/"
+    type:     annotation
+    prefix:   /calendar
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+
+root:
+    path: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:urlRedirect
+        path: /calendar
+        permanent: true
+
+logout:
+    path: /logout

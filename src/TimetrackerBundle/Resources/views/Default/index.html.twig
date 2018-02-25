@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Infinetix: Timesheet</title>
+
+    {% stylesheets '@bootstrap_css' %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+    <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('static/assets/img/favicon.ico')) }}"/>
+
+    <style>
+      .weekend {
+        background-color: lightgrey;
+      }
+      td,
+      th {
+        padding: 5px;
+      }
+      .fake-link {
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    Index
+
+  </body>
+</html>

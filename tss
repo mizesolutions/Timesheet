@@ -1,0 +1,49 @@
+#!/bin/bash
+
+function usage() {
+		echo
+        echo Usage: tss [argument]
+        echo Args:
+        echo dump - removes Timesheet folder
+        echo co   - checks out Timesheet
+        echo up   - updates Timesheet
+        echo
+
+        exit 1
+}
+
+
+if [ $# -eq 0 ]; 
+then
+        usage
+
+else
+        if [ $1 = "dump" ];
+        then
+                sudo rm -R /var/www/ts/Timesheet
+                exit 0
+
+        elif [ $1 = "co" ];
+        then
+                cd /var/www/ts
+                svn co svn+ssh://timesheet@spokane.infinetix.com/home/svn/repositories/TIMESHEETS_svn/trunk/Timesheet
+
+        elif [ $1 = "up" ];
+        then
+                cd /var/www/ts/Timesheet
+                svn update
+
+        else
+                usage
+        fi
+fi
+
+cd /var/www/ts
+export SYMFONY_ENV=prod
+sudo setfacl -R -m u:www-data:rwx /var/www/ Timesheet/
+sudo setfacl -R -m u:root:rwx /var/www/ Timesheet/
+sudo setfacl -R -m u:timesheet:rwx /var/www/ Timesheet/
+cd Timesheet
+composer install --no-dev -o
+php bin/console cache:clear --env=prod --no-debug
+exit 0

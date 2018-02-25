@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="Sqlite" id="Project_18b3d" template="Default" database="Sqlite" >
+	<schema name="Default" schemaname="Default" >
+		<table name="calendarMonth" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="currentMonth" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="currentYear" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="startDay" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="startMonth" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="startYear" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="endDay" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="endMonth" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="endYear" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<index name="pk_calendarMonth" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="company" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="name" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="address" type="varchar" length="255" jt="12" />
+			<column name="city" type="varchar" length="255" jt="12" />
+			<column name="state" type="varchar" length="255" jt="12" />
+			<column name="zip" type="varchar" length="255" jt="12" />
+			<column name="country" type="varchar" length="255" jt="12" />
+			<index name="pk_company" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UNIQ_4FBF094F5E237E06" unique="UNIQUE" >
+				<column name="name" />
+			</index>
+		</table>
+		<table name="contact" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="firstName" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="middleName" type="varchar" length="255" jt="12" />
+			<column name="lastName" type="varchar" length="255" jt="12" />
+			<column name="emailAddress" type="varchar" length="255" jt="12" />
+			<column name="phone1" type="varchar" length="255" jt="12" />
+			<column name="phone2" type="varchar" length="255" jt="12" />
+			<index name="pk_contact" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="project" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="company_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<column name="contact_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<column name="name" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="purchaseOrder" type="varchar" length="255" jt="12" />
+			<column name="notes" type="clob" length="2000000000" decimal="10" jt="12" />
+			<index name="pk_project" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="IDX_2FB3D0EEE7A1254A" unique="NORMAL" >
+				<column name="contact_id" />
+			</index>
+			<index name="IDX_2FB3D0EE979B1AD6" unique="NORMAL" >
+				<column name="company_id" />
+			</index>
+			<fk name="Fk_project" to_schema="Default" to_table="company" >
+				<fk_column name="company_id" pk="id" />
+			</fk>
+			<fk name="Fk_project" to_schema="Default" to_table="contact" >
+				<fk_column name="contact_id" pk="id" />
+			</fk>
+		</table>
+		<table name="role" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="name" type="varchar" length="255" jt="12" mandatory="y" />
+			<index name="pk_role" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="task" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="project_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<column name="name" type="varchar" length="255" jt="12" mandatory="y" />
+			<index name="pk_task" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="IDX_527EDB25166D1F9C" unique="NORMAL" >
+				<column name="project_id" />
+			</index>
+			<fk name="Fk_task" to_schema="Default" to_table="project" >
+				<fk_column name="project_id" pk="id" />
+			</fk>
+		</table>
+		<table name="trackedDay" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="day" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="hours" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="trackedTask_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<column name="notes" type="clob" length="2000000000" decimal="10" jt="12" />
+			<index name="pk_trackedDay" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="Fk_trackedDay" to_schema="Default" to_table="trackedTask" delete_action="cascade" >
+				<fk_column name="trackedTask_id" pk="id" />
+			</fk>
+		</table>
+		<table name="trackedMonth" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="user_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<column name="month" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="year" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<index name="pk_trackedMonth" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="IDX_EF231F05A76ED395" unique="NORMAL" >
+				<column name="user_id" />
+			</index>
+			<fk name="Fk_trackedMonth" to_schema="Default" to_table="user" >
+				<fk_column name="user_id" pk="id" />
+			</fk>
+		</table>
+		<table name="trackedProject" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="project_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<column name="trackedMonth_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<index name="pk_trackedProject" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="IDX_9421FF29FB778D8" unique="NORMAL" >
+				<column name="trackedMonth_id" />
+			</index>
+			<index name="IDX_9421FF29166D1F9C" unique="NORMAL" >
+				<column name="project_id" />
+			</index>
+			<fk name="Fk_trackedProject" to_schema="Default" to_table="project" >
+				<fk_column name="project_id" pk="id" />
+			</fk>
+			<fk name="Fk_trackedProject" to_schema="Default" to_table="trackedMonth" >
+				<fk_column name="trackedMonth_id" pk="id" />
+			</fk>
+		</table>
+		<table name="trackedTask" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="task_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<column name="trackedProject_id" type="integer" length="2000000000" decimal="10" jt="4" />
+			<index name="pk_trackedTask" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="Fk_trackedTask" to_schema="Default" to_table="task" >
+				<fk_column name="task_id" pk="id" />
+			</fk>
+			<fk name="Fk_trackedTask" to_schema="Default" to_table="trackedProject" >
+				<fk_column name="trackedProject_id" pk="id" />
+			</fk>
+		</table>
+		<table name="user" >
+			<column name="id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="email_address" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="password" type="varchar" length="64" jt="12" mandatory="y" />
+			<column name="is_active" type="boolean" length="2000000000" decimal="10" jt="-7" mandatory="y" />
+			<column name="first_name" type="varchar" length="255" jt="12" />
+			<column name="last_name" type="varchar" length="255" jt="12" />
+			<index name="pk_user" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="UNIQ_8D93D649B08E074E" unique="UNIQUE" >
+				<column name="email_address" />
+			</index>
+		</table>
+		<table name="user_role" >
+			<column name="role_id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<column name="user_id" type="integer" length="2000000000" decimal="10" jt="4" mandatory="y" />
+			<index name="pk_user_role" unique="PRIMARY_KEY" >
+				<column name="role_id" />
+			</index>
+			<index name="IDX_2DE8C6A3A76ED395" unique="NORMAL" >
+				<column name="user_id" />
+			</index>
+			<index name="sqlite_autoindex_user_role_1" unique="UNIQUE" >
+				<column name="user_id" />
+				<column name="role_id" />
+			</index>
+			<fk name="Fk_user_role" to_schema="Default" to_table="role" >
+				<fk_column name="role_id" pk="id" />
+			</fk>
+			<fk name="Fk_user_role" to_schema="Default" to_table="user" >
+				<fk_column name="user_id" pk="id" />
+			</fk>
+		</table>
+	</schema>
+	<connector name="Sqlite" database="Sqlite" driver_class="org.sqlite.JDBC" driver_jar="sqlite-jdbc-3.18.0.jar" driver_desc="Standard" host="localhost" port="7210" instance="C:/projects/Timesheet/app/dev.sqlite" />
+	<layout name="Default Layout" id="Layout_2e94f84" show_relation="columns" >
+		<entity schema="Default" name="calendarMonth" color="bfd4f5" x="45" y="240" />
+		<entity schema="Default" name="company" color="bfd4f5" x="210" y="45" />
+		<entity schema="Default" name="contact" color="bfbff5" x="375" y="675" />
+		<entity schema="Default" name="project" color="bfd4f5" x="45" y="45" />
+		<entity schema="Default" name="role" color="c8f5bf" x="180" y="525" />
+		<entity schema="Default" name="task" color="bfbff5" x="555" y="525" />
+		<entity schema="Default" name="trackedDay" color="bfbff5" x="555" y="675" />
+		<entity schema="Default" name="trackedMonth" color="f5ddbf" x="555" y="45" />
+		<entity schema="Default" name="trackedProject" color="f5ddbf" x="375" y="45" />
+		<entity schema="Default" name="trackedTask" color="bfbff5" x="375" y="525" />
+		<entity schema="Default" name="user" color="f5ddbf" x="375" y="195" />
+		<entity schema="Default" name="user_role" color="c8f5bf" x="45" y="525" />
+	</layout>
+	<layout name="Sample Layout with Groups" id="Layout_1d22570" show_relation="columns" >
+		<entity schema="Default" name="calendarMonth" color="bfd4f5" x="45" y="420" />
+		<entity schema="Default" name="company" color="bfd4f5" x="210" y="225" />
+		<entity schema="Default" name="contact" color="bfbff5" x="375" y="855" />
+		<entity schema="Default" name="project" color="bfd4f5" x="45" y="225" />
+		<entity schema="Default" name="role" color="c8f5bf" x="180" y="705" />
+		<entity schema="Default" name="task" color="bfbff5" x="555" y="705" />
+		<entity schema="Default" name="trackedDay" color="bfbff5" x="555" y="855" />
+		<entity schema="Default" name="trackedMonth" color="f5ddbf" x="555" y="225" />
+		<entity schema="Default" name="trackedProject" color="f5ddbf" x="375" y="225" />
+		<entity schema="Default" name="trackedTask" color="bfbff5" x="375" y="705" />
+		<entity schema="Default" name="user" color="f5ddbf" x="375" y="375" />
+		<entity schema="Default" name="user_role" color="c8f5bf" x="45" y="705" />
+		<callout x="45" y="75" pointer="NO" >
+			<comment><![CDATA[For a better understanding of the schema create multiple layouts (diagrams). 
+Layouts will be saved to project file. One table may show in multiple layouts.
+ 
+Double-click any column, foreign key or table headers to edit.
+Create foreign keys by drag and drop of one column over a primary key column.
+Foreign keys can be marked as virtual and they won't be created in the database.]]></comment>
+		</callout>
+		<group name="project" color="ecf0f7" >
+			<entity schema="Default" name="project" />
+			<entity schema="Default" name="company" />
+			<entity schema="Default" name="calendarMonth" />
+		</group>
+		<group name="trackedProject" color="f7f3ec" >
+			<entity schema="Default" name="trackedProject" />
+			<entity schema="Default" name="trackedMonth" />
+			<entity schema="Default" name="user" />
+		</group>
+		<group name="trackedTask" color="ececf7" >
+			<entity schema="Default" name="trackedTask" />
+			<entity schema="Default" name="task" />
+			<entity schema="Default" name="trackedDay" />
+			<entity schema="Default" name="contact" />
+		</group>
+		<group name="user_role" color="eef7ec" >
+			<entity schema="Default" name="user_role" />
+			<entity schema="Default" name="role" />
+		</group>
+	</layout>
+	<layout name="Sample Layout with Relational Data Browse" id="Layout_496f1af" show_relation="columns" >
+		<entity schema="Default" name="trackedTask" color="bfbff5" x="45" y="45" />
+		<entity schema="Default" name="company" color="bfd4f5" x="600" y="150" />
+		<entity schema="Default" name="task" color="bfbff5" x="225" y="120" />
+		<entity schema="Default" name="trackedProject" color="f5ddbf" x="720" y="60" />
+		<entity schema="Default" name="user" color="f5ddbf" x="735" y="420" />
+		<entity schema="Default" name="trackedMonth" color="f5ddbf" x="750" y="255" />
+		<entity schema="Default" name="user_role" color="c8f5bf" x="600" y="480" />
+		<entity schema="Default" name="role" color="c8f5bf" x="465" y="480" />
+		<entity schema="Default" name="project" color="bfd4f5" x="405" y="90" />
+		<entity schema="Default" name="contact" color="bfbff5" x="405" y="300" />
+		<entity schema="Default" name="calendarMonth" color="bfd4f5" x="210" y="360" />
+		<entity schema="Default" name="trackedDay" color="bfbff5" x="45" y="240" />
+		<browser id="Browse_2ee192b" name="Sample Relational Data Browse" confirm_updates="y" >
+			<browse_table schema="Default" entity="project" x="20" y="20" width="400" height="300" >
+				<browse_table schema="Default" entity="company" fk="Fk_project" x="440" y="20" width="400" height="300" record_view="y" />
+			</browse_table>
+		</browser>
+	</layout>
+</project>
