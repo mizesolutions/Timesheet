@@ -114,17 +114,17 @@ a {
    justify-content: center;
    width: 50%;
    /*border: 1px solid #bab5b5;*/
-   border: 1px solid #000000;
-   border-bottom-right-radius: 8px;
-   border-bottom-left-radius: 8px;
-   background-color: #d0dde9;
-   box-shadow: 0 0 8px 2px #3c3b3b;
+   /*border: 1px solid #000000;*/
+   /*border-bottom-right-radius: 8px;*/
+   /*border-bottom-left-radius: 8px;*/
+   /*background-color: #d0dde9;*/
+   /*box-shadow: 0 0 8px 2px #3c3b3b;*/
 }
 
 .textBox1 {
    margin: 5em 0 0 0;
    padding: 0;
-   width: 85%;
+   width: 65%;
    border-color: #213540;
    border-bottom: 3px solid;
 }
@@ -132,7 +132,6 @@ a {
 h1 {
    color: #000000;
    text-align: center;
-   text-shadow: 1px 1px rgba(153, 192, 255, 0.93);
    font-weight: bold;
    font-size: 5em;
    font-family: 'Titillium Web', sans-serif;
@@ -141,8 +140,7 @@ h1 {
 .textBox2 {
    margin: .8em 0 5em 0;
    padding: 0;
-   /*width: 75%;*/
-   min-width: 5em;
+   width: 65%;
 }
 
 .log-in {
