@@ -122,11 +122,11 @@ a {
 }
 
 .textBox1 {
-   margin: 1em;
+   margin: 2em;
    padding: 0;
-   width: 65%;
+   width: 50%;
    border-color: #213540;
-   border-bottom: 3px solid;
+   border-bottom: 2px solid;
 }
 
 h1 {
@@ -138,9 +138,8 @@ h1 {
 }
 
 .textBox2 {
-   margin: .8em 0 5em 0;
+   margin: 1em;
    padding: 0;
-   width: 65%;
 }
 
 .log-in {
